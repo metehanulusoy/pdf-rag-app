@@ -5,25 +5,25 @@ from rag import pdf_isle, soru_sor, ozet_cikar
 load_dotenv()
 
 st.set_page_config(
-    page_title="PDF Asistan",
+    page_title="PDF Assistant",
     page_icon="🤖",
     layout="wide"
 )
 
-st.title("🤖 PDF Asistan")
-st.markdown("Belgelerinizi yükleyin, yapay zeka sizin için yanıtlasın.")
+st.title("🤖 PDF Assistant")
+st.markdown("Upload your documents and let AI answer your questions.")
 st.divider()
 
 with st.sidebar:
-    st.header("⚙️ Ayarlar")
+    st.header("⚙️ Settings")
     
-    dil = st.selectbox("🌍 Yanıt dili", ["Türkçe", "English", "Deutsch", "Français"])
+    dil = st.selectbox("🌍 Response language", ["Turkish", "English", "German", "French"])
     
     st.divider()
     
-    st.header("📂 Belge Yükle")
+    st.header("📂 Upload Document")
     uploaded_files = st.file_uploader(
-        "PDF seç (birden fazla olabilir)",
+        "Select PDF (multiple allowed)",
         type="pdf",
         accept_multiple_files=True,
         label_visibility="collapsed"
@@ -33,55 +33,51 @@ with st.sidebar:
         dosya_isimleri = [f.name for f in uploaded_files]
         
         if "vectordb" not in st.session_state or st.session_state.get("dosya_listesi") != dosya_isimleri:
-            with st.spinner("PDF işleniyor..."):
+            with st.spinner("Processing PDF..."):
                 st.session_state.vectordb = pdf_isle(uploaded_files)
                 st.session_state.dosya_listesi = dosya_isimleri
                 st.session_state.mesajlar = []
                 st.session_state.ozet = None
-            st.success(f"✅ {len(uploaded_files)} belge hazır!")
+            st.success(f"✅ {len(uploaded_files)} document(s) ready!")
         
         for f in uploaded_files:
-                st.caption(f"📄 {f.name}")
+            st.caption(f"📄 {f.name}")
         
         st.divider()
         
-        if st.button("📊 Özet Çıkar", use_container_width=True):
-            with st.spinner("Özetleniyor..."):
+        if st.button("📊 Generate Summary", use_container_width=True):
+            with st.spinner("Summarizing..."):
                 uploaded_files[0].seek(0)
                 st.session_state.ozet = ozet_cikar(uploaded_files[0], dil)
         
-        if st.button("🗑️ Sıfırla", use_container_width=True):
+        if st.button("🗑️ Reset", use_container_width=True):
             st.session_state.clear()
             st.rerun()
 
-# Ana alan
 if "vectordb" not in st.session_state:
-    st.info("👈 Sol taraftan PDF yükleyerek başlayın.")
+    st.info("👈 Upload a PDF from the left panel to get started.")
     
 else:
-    # Özet göster
     if st.session_state.get("ozet"):
-        with st.expander("📊 Belge Özeti", expanded=True):
+        with st.expander("📊 Document Summary", expanded=True):
             st.write(st.session_state.ozet)
         st.divider()
     
-    # Sık sorulan sorular
-    st.markdown("#### ⚡ Hızlı Sorular")
+    st.markdown("#### ⚡ Quick Questions")
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        if st.button("📌 Belgeyi özetle", use_container_width=True):
-            st.session_state.hizli_soru = "Bu belgeyi kısaca özetle."
+        if st.button("📌 Summarize document", use_container_width=True):
+            st.session_state.hizli_soru = "Summarize this document briefly."
     with col2:
-        if st.button("🔑 Ana konular neler?", use_container_width=True):
-            st.session_state.hizli_soru = "Bu belgedeki ana konular nelerdir?"
+        if st.button("🔑 What are the main topics?", use_container_width=True):
+            st.session_state.hizli_soru = "What are the main topics in this document?"
     with col3:
-        if st.button("📋 Önemli noktalar", use_container_width=True):
-            st.session_state.hizli_soru = "Bu belgedeki en önemli noktalar nelerdir?"
+        if st.button("📋 Key points", use_container_width=True):
+            st.session_state.hizli_soru = "What are the most important points in this document?"
 
     st.divider()
 
-    # Sohbet geçmişi
     if "mesajlar" not in st.session_state:
         st.session_state.mesajlar = []
 
@@ -89,8 +85,7 @@ else:
         with st.chat_message(mesaj["rol"]):
             st.write(mesaj["icerik"])
 
-    # Hızlı soru veya normal soru
-    soru = st.chat_input("Sorunuzu yazın...")
+    soru = st.chat_input("Type your question...")
     
     if "hizli_soru" in st.session_state:
         soru = st.session_state.hizli_soru
@@ -102,7 +97,7 @@ else:
             st.write(soru)
 
         with st.chat_message("assistant"):
-            with st.spinner("Düşünüyor..."):
+            with st.spinner("Thinking..."):
                 yanit = soru_sor(st.session_state.vectordb, soru, dil)
             st.write(yanit)
             
