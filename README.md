@@ -1,20 +1,20 @@
-# 📄 PDF Asistan
+# 📄 PDF Assistant
 
-AI destekli PDF soru-cevap sistemi. Belgenizi yükleyin, yapay zeka sizin için yanıtlasın.
+AI-powered PDF question answering system. Upload your document and let AI answer your questions.
 
-## 🚀 Canlı Demo
+## 🚀 Live Demo
 
-[PDF Asistan'ı Dene](https://pdf-rag-app-metehanulusoy.streamlit.app)
+[Try PDF Assistant](https://pdf-rag-app-metehanulusoy.streamlit.app)
 
-## ✨ Özellikler
+## ✨ Features
 
-- 📂 Birden fazla PDF yükleme
-- 💬 Sohbet arayüzü
-- 📊 Otomatik özet çıkarma
-- 🌍 Çoklu dil desteği (Türkçe, İngilizce, Almanca, Fransızca)
-- ⚡ Hızlı soru kısayolları
+- 📂 Multiple PDF upload
+- 💬 Chat interface
+- 📊 Automatic summary extraction
+- 🌍 Multi-language support (Turkish, English, German, French)
+- ⚡ Quick question shortcuts
 
-## 🛠️ Teknolojiler
+## 🛠️ Tech Stack
 
 - Python
 - LangChain
@@ -22,19 +22,19 @@ AI destekli PDF soru-cevap sistemi. Belgenizi yükleyin, yapay zeka sizin için 
 - ChromaDB
 - Streamlit
 
-## ⚙️ Kurulum
+## ⚙️ Setup
 
 ```bash
 pip install -r requirements.txt
 ```
 
-`.env` dosyası oluştur:
+Create `.env` file:
 
 ```
 OPENAI_API_KEY=sk-...
 ```
 
-Uygulamayı başlat:
+Run the app:
 
 ```bash
 streamlit run app.py
